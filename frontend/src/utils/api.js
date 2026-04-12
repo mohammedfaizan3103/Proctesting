@@ -98,8 +98,8 @@ export const listAvailableExams = () =>
   API.get("/exams/available", localAuthHeader());
 
 /** ---------------- ATTEMPTS ---------------- **/
-export const startAttempt = (examId) =>
-  API.post("/attempts/start", { examId }, localAuthHeader());
+export const startAttempt = (examId, payload = {}) =>
+  API.post("/attempts/start", { examId, ...payload }, localAuthHeader());
 export const saveAttempt = (attemptId, answers) =>
   API.post("/attempts/save", { attemptId, answers }, localAuthHeader());
 export const submitAttempt = (attemptId, answers) =>
@@ -158,3 +158,24 @@ export const checkFace = (studentId, imageBlob) => {
   });
 };
 
+/** ---------------- GAZE PROCTORING ---------------- **/
+
+export const sendGazeFrame = (studentId, imageBlob) => {
+  const form = new FormData();
+  form.append("image", imageBlob, "frame.jpg");
+  return API.post(`/face/gaze/frame/${encodeURIComponent(studentId)}`, form, {
+    headers: { ...localAuthHeader().headers, "Content-Type": "multipart/form-data" },
+  });
+};
+
+export const getGazeSummary = (studentId) => {
+  return API.get(`/face/gaze/summary/${encodeURIComponent(studentId)}`, localAuthHeader());
+};
+
+export const endGazeSession = (studentId) => {
+  return API.post(`/face/gaze/end/${encodeURIComponent(studentId)}`, {}, localAuthHeader());
+};
+
+export const getActiveGazeSessions = () => {
+  return API.get(`/face/gaze/active`, localAuthHeader());
+};

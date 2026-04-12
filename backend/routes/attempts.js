@@ -77,7 +77,7 @@ const scoreQuestion = (q, given) => {
 // POST /api/attempts/start { examId }
 router.post("/start", auth, auth.requireRole("student"), async (req, res) => {
   try {
-    const { examId } = req.body || {};
+    const { examId, deviceInfo, proctoringTier } = req.body || {};
     if (!examId) return res.status(400).json({ message: "examId is required" });
     // Load student academic profile from roster when principal is Student; fallback to Users for legacy
     let student = null;
@@ -176,6 +176,8 @@ router.post("/start", auth, auth.requireRole("student"), async (req, res) => {
         studentRef: req.user.model || "User",
         startedAt: now,
         status: "in-progress",
+        deviceInfo: deviceInfo || {},
+        proctoringTier: proctoringTier || "full"
       });
     } else if (attempt.status !== "in-progress") {
       let useRetake = false;
@@ -205,6 +207,8 @@ router.post("/start", auth, auth.requireRole("student"), async (req, res) => {
         studentRef: req.user.model || "User",
         startedAt: now,
         status: "in-progress",
+        deviceInfo: deviceInfo || {},
+        proctoringTier: proctoringTier || "full"
       });
     }
 

@@ -21,6 +21,8 @@ const ViolationSchema = new mongoose.Schema(
         "face-absent",
         "face-mismatch",
         "face-multiple",
+        "gaze-away",
+        "gaze-no-face"
       ],
     },
     at: { type: Date, default: Date.now },
@@ -58,6 +60,16 @@ const AttemptSchema = new mongoose.Schema(
       enum: ["in-progress", "submitted", "invalid"],
       default: "in-progress",
       index: true,
+    },
+    deviceInfo: {
+      cores: { type: Number },
+      memory: { type: Number },
+      os: { type: String }
+    },
+    proctoringTier: {
+      type: String,
+      enum: ["full", "snapshot", "event-only"],
+      default: "full"
     },
     answers: { type: [AnswerSchema], default: [] },
     score: { type: Number, default: 0 },
